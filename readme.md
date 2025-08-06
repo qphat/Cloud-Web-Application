@@ -6,6 +6,8 @@ This repository provides an infrastructure-as-code solution using **Terraform** 
 
 ## Architecture Overview
 
+![AWS Architecture Diagram](images/Final-arc.png)
+
 The deployment consists of multiple Terraform modules:
 
 * **VPC Module**: Creates a Virtual Private Cloud with public/private subnets
