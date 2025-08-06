@@ -27,8 +27,8 @@ module "ec2" {
   public_subnet_1_id   = module.vpc.public_subnet_1_id
   ami_id               = var.ami_id
   instance_type        = var.instance_type
-  key_name             = "vockey"
-  iam_instance_profile = "LabInstanceProfile"
+  key_name             = var.key_name
+  iam_instance_profile = var.iam_instance_profile
   region               = var.region
 }
 
@@ -38,14 +38,24 @@ module "rds" {
   private_subnet_1_id  = module.vpc.private_subnet_1_id
   private_subnet_2_id  = module.vpc.private_subnet_2_id
   vpc_cidr             = var.vpc_cidr
+  engine               = "mysql"
+  engine_version       = "8.0"
+  instance_class       = "db.t3.micro"
+  allocated_storage    = 20
+  db_user              = var.db_user
+  db_password          = var.db_password
+  db_name              = var.db_name
+  publicly_accessible  = false
+  skip_final_snapshot  = true
+  storage_encrypted    = false
 }
 
 module "secrets" {
   source         = "./modules/secrets"
   rds_endpoint   = module.rds.rds_endpoint
-  db_user        = "nodeapp"
-  db_password    = "student12"
-  db_name        = "STUDENTS"
+  db_user        = var.db_user
+  db_password    = var.db_password
+  db_name        = var.db_name
 }
 
 module "alb" {
@@ -60,8 +70,8 @@ module "autoscaling" {
   source               = "./modules/autoscaling"
   ami_id               = var.ami_id
   instance_type        = var.instance_type
-  key_name             = "vockey"
-  iam_instance_profile = "LabInstanceProfile"
+  key_name             = var.key_name
+  iam_instance_profile = var.iam_instance_profile
   security_group_id    = module.ec2.security_group_id
   public_subnet_1_id   = module.vpc.public_subnet_1_id
   public_subnet_2_id   = module.vpc.public_subnet_2_id
